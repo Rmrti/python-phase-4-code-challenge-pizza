@@ -1,8 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
+from app import db
 
 metadata = MetaData(
     naming_convention={
@@ -11,7 +12,6 @@ metadata = MetaData(
 )
 
 db = SQLAlchemy(metadata=metadata)
-
 
 class Restaurant(db.Model, SerializerMixin):
     __tablename__ = "restaurants"
@@ -22,7 +22,7 @@ class Restaurant(db.Model, SerializerMixin):
 
     # add relationship
 
-    restaurant_pizzas = db.relationship ('restaurant_pizzas' , backref = 'restaurants')
+    restaurant_pizzas = db.relationship ('RestaurantPizza' , backref = 'restaurants')
 
 
     # add serialization rules
@@ -47,7 +47,7 @@ class Pizza(db.Model, SerializerMixin):
 
     # add relationship
 
-    restaurant_pizzas = db.relationship ("restaurant_pizzas" , backref = 'pizza')
+    restaurant_pizzas = db.relationship ("RestaurantPizza" , backref = 'pizza')
 
     # add serialization rules
 
@@ -70,8 +70,8 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
     # add relationships
 
-    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurant.id'), nullable= False)
-    pizza_id = db.Column(db.Integer, db.ForeignKey('pizza.id'), nullable= False)
+    restaurant_id = db.Column(db.Integer, db.ForeignKey('restaurants.id'), nullable= False)
+    pizza_id = db.Column(db.Integer, db.ForeignKey('pizzas.id'), nullable= False)
 
     # add serialization rules
 
