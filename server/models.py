@@ -90,6 +90,8 @@ class RestaurantPizza(db.Model, SerializerMixin):
             raise ValueError('Restaurant id is missing')
         if not self.pizza_id:
             raise ValueError('Pizza id is missing')
+        if self.price < 1 or self.price > 30:
+            raise ValueError("Price should be between 1 and 30")
         
     def __repr__(self):
         return f"<RestaurantPizza ${self.price}>"
