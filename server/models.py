@@ -26,7 +26,13 @@ class Restaurant(db.Model, SerializerMixin):
 
 
     # add serialization rules
-    
+
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'address': self.address
+        }
 
     def __repr__(self):
         return f"<Restaurant {self.name}>"
@@ -45,6 +51,13 @@ class Pizza(db.Model, SerializerMixin):
 
     # add serialization rules
 
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'ingredients': self.ingredients
+        }
+
     def __repr__(self):
         return f"<Pizza {self.name}, {self.ingredients}>"
 
@@ -62,7 +75,21 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
     # add serialization rules
 
+    def to_dict(self):
+        return{
+            'id': self.id,
+            'price': self.price,
+            'restaurant_id': self.restaurant_id,
+            'pizza_id': self.pizza_id,
+        }
+
     # add validation
 
+    def validate(self):
+        if not self.restaurant_id:
+            raise ValueError('Restaurant id is missing')
+        if not self.pizza_id:
+            raise ValueError('Pizza id is missing')
+        
     def __repr__(self):
         return f"<RestaurantPizza ${self.price}>"
