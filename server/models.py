@@ -22,6 +22,8 @@ class Restaurant(db.Model, SerializerMixin):
 
     # add relationship
 
+    
+
     # add serialization rules
 
     def __repr__(self):
