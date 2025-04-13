@@ -2,7 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from flask_migrate import Migrate
-from flask import Flask, request, make_response
+from flask import Flask, jsonify, request, make_response
 from flask_restful import Api, Resource
 
 import os
@@ -42,8 +42,8 @@ def create_app():
     @app.route('/restaurant', methods = ['GET'])
     def get_restaurants():
         restaurants = Restaurant.query.all()
+        return jsonify([restaurant.to_dict(only=("id", "name", "address")) for restaurant in restaurants]), 200
 
-        return restaurants
     
     
     return app
