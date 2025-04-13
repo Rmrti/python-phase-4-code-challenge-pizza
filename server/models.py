@@ -14,7 +14,8 @@ class Restaurant(db.Model, SerializerMixin):
 
     # add relationship
 
-    restaurant_pizzas = db.relationship ('RestaurantPizza' , backref = 'restaurants', cascade = "all, delete")
+    restaurant_pizzas = db.relationship ('RestaurantPizza' , backref = 'restaurant', cascade = "all, delete")
+    
 
 
     # add serialization rules
@@ -63,14 +64,11 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
 
     # add validation
-
-    def validate(self):
-        if not self.restaurant_id:
-            raise ValueError('Restaurant id is missing')
-        if not self.pizza_id:
-            raise ValueError('Pizza id is missing')
-        if self.price < 1 or self.price > 30:
+    @validates('price')
+    def validate_price(self, key, value):
+        if value < 1 or value > 30:
             raise ValueError("Price should be between 1 and 30")
+        return value
         
     def __repr__(self):
         return f"<RestaurantPizza ${self.price}>"

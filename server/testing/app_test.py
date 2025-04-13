@@ -1,6 +1,8 @@
-from models import Restaurant, RestaurantPizza, Pizza
-from app import app, db
+from server.models import Restaurant, RestaurantPizza, Pizza
+
 from faker import Faker
+from server.app import create_app, db
+app = create_app()
 
 
 class TestApp:

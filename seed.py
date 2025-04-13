@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-from app import app
-from models import db, Restaurant, Pizza, RestaurantPizza
+from server.app import create_app, db
+from server.models import Restaurant, Pizza, RestaurantPizza
+
+app = create_app()
 
 with app.app_context():
 
