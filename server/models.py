@@ -2,7 +2,7 @@
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy_serializer import SerializerMixin
-from app import db
+from .app import db
 
 
 class Restaurant(db.Model, SerializerMixin):
@@ -14,17 +14,13 @@ class Restaurant(db.Model, SerializerMixin):
 
     # add relationship
 
-    restaurant_pizzas = db.relationship ('RestaurantPizza' , backref = 'restaurants')
+    restaurant_pizzas = db.relationship ('RestaurantPizza' , backref = 'restaurants', cascade = "all, delete")
 
 
     # add serialization rules
 
-    def to_dict(self):
-        return{
-            'id': self.id,
-            'name': self.name,
-            'address': self.address
-        }
+    pizzas = association_proxy('restaurant_pizzas', 'pizza')
+    serialize_rules = ('-restaurant_pizzas.restaurant',)
 
     def __repr__(self):
         return f"<Restaurant {self.name}>"
@@ -43,12 +39,8 @@ class Pizza(db.Model, SerializerMixin):
 
     # add serialization rules
 
-    def to_dict(self):
-        return{
-            'id': self.id,
-            'name': self.name,
-            'ingredients': self.ingredients
-        }
+    restaurants = association_proxy('restaurant_pizzas', 'restaurant')
+    serialize_rules = ('-restaurant_pizzas.pizza',)
 
     def __repr__(self):
         return f"<Pizza {self.name}, {self.ingredients}>"
@@ -67,13 +59,8 @@ class RestaurantPizza(db.Model, SerializerMixin):
 
     # add serialization rules
 
-    def to_dict(self):
-        return{
-            'id': self.id,
-            'price': self.price,
-            'restaurant_id': self.restaurant_id,
-            'pizza_id': self.pizza_id,
-        }
+    serialize_rules = ('-restaurant.restaurant_pizzas', '-pizza.restaurant_pizzas')
+
 
     # add validation
 
